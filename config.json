@@ -1,6 +1,6 @@
 {
     "hotkey": "F8",
-    "click_button": "Left Click",
-    "click_type": "Single Click",
-    "interval": 1.0
+    "click_button": "left",
+    "click_type": "single",
+    "interval": 0.5
 }

@@ -3,10 +3,11 @@ from tkinter import messagebox, ttk
 from styles import DARK_STYLE
 
 class BaseScreen(tk.Frame):
-    def __init__(self, parent, controller, config=None):
+    def __init__(self, parent, controller, config=None, loc_manager=None):
         super().__init__(parent, bg=DARK_STYLE["colors"]["bg_main"])
         self.controller = controller
         self.config_data = config or {}
+        self.locale = loc_manager or {}
 
         # Make this frame fill the entire container cell
         self.grid(row=0, column=0, sticky="nsew")
@@ -101,6 +102,8 @@ class BaseScreen(tk.Frame):
         row_frame = tk.Frame(self.content, bg=DARK_STYLE["colors"]["bg_main"])
         row_frame.pack(pady=10, fill="x", padx=10)
 
+        self.buttons = []  # Store references here
+
         for i, btn_info in enumerate(buttons):
             btn = tk.Button(
                 row_frame,
@@ -112,6 +115,8 @@ class BaseScreen(tk.Frame):
             btn.pack(side="left", expand=True)
             if i < len(buttons) - 1:
                 btn.pack_configure(padx=(0, 10))  # space between buttons
+
+            self.buttons.append(btn)
 
         return row_frame
 

@@ -6,28 +6,33 @@ from styles import DARK_STYLE
 from base_screen import BaseScreen
 
 class AutoClickerScreen(BaseScreen):
-    def __init__(self, parent, controller, config=None):
-        super().__init__(parent, controller, config=config)
+    def __init__(self, parent, controller, config=None, loc_manager=None):
+        super().__init__(parent, controller, config=config, loc_manager=loc_manager)
         self.configure(bg=DARK_STYLE["colors"]["bg_main"])
-        self.create_title_label("AutoClicker")
+        self.title_label = self.create_title_label(self.locale.get("TITLE_AUTOCLK"))
 
         self.controller = controller
         self.clicker = Autoclicker(config)
         self.running_gui = False
         self.running = False
 
-        self.start_button = self.create_button("START - " + self.config_data.get("hotkey"), command=self.toggle_clicking)
+        self.start_button = self.create_button(self.locale.get("START_BUTTON") + " - " + self.config_data.get("hotkey"), command=self.toggle_clicking)
 
-        self.config_button = self.create_button("Configuration", command=self.config_screen)
+        self.config_button = self.create_button(self.locale.get("CONFIGURATION_BUTTON"), command=self.config_screen)
 
-        self.prev_button = self.create_button("Back", command=self.previous_screen)
+        self.prev_button = self.create_button(self.locale.get("BACK"), command=self.previous_screen)
+
+    def refresh(self):
+        self.title_label.config(text=self.locale.get("TITLE_AUTOCLK"))
+        self.start_button.config(text=self.locale.get("START_BUTTON"))
+        self.config_button.config(text=self.locale.get("CONFIGURATION_BUTTON"))
+        self.prev_button.config(text=self.locale.get("BACK"))
 
     def on_show(self):
         if not hasattr(self, "thread") or not self.thread.is_alive():
             self.running = True
             self.thread = threading.Thread(target=self._keyboard_loop, daemon=True)
             self.thread.start()
-
 
     def toggle_clicking(self):
         if hasattr(self, "_toggle_locked") and self._toggle_locked:
@@ -45,13 +50,13 @@ class AutoClickerScreen(BaseScreen):
         print("AutoClicker Started")
         self.running_gui = True
         self.clicker.start()
-        self.start_button.config(text="STOP - " + self.config_data.get("hotkey"))
+        self.start_button.config(text=self.locale.get("STOP_BUTTON") + " - " + self.config_data.get("hotkey"))
 
     def stop_clicking(self):
         print("AutoClicker Stopped")
         self.running_gui = False
         self.clicker.stop()
-        self.start_button.config(text="START - " + self.config_data.get("hotkey"))
+        self.start_button.config(text=self.locale.get("START_BUTTON") + " - " + self.config_data.get("hotkey"))
 
     def previous_screen(self):
         if self.running:
